@@ -2,7 +2,7 @@
  * SP.X tiny framework
  *
  * Copyright 2015 Sborka Project
- * Code by Hauts: http://hauts.com
+ * Code by Hauts: http://hauts.ru/
  *
  * https://github.com/SborkaProject/SP.X 
  */
@@ -15,7 +15,7 @@
 		return;
 	}
 
-	var VERSION = '1.005 [13.11.2015]';
+	var VERSION = '1.006 [02.12.2015]';
 	var DUMMY = function(){}
 
 	var DEFAULT_NAME_PREFIX = 'SiteController_';
@@ -174,7 +174,7 @@
 		},
 		testCallback: function( callback, applyArguments, context ){
 			if(X.Utils.isFunction(callback)){
-				return callback.apply(context, applyArguments);
+				return callback.apply(context, applyArguments || []);
 			}
 			return null;
 		},
