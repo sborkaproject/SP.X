@@ -17,7 +17,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
 	
 	<script>
-	var App = new SP.X('App', true);
+	var App = new SP.X('App', false);
 
 	App.define('controllers.RotateController', function(){
 		var r = 0;
@@ -41,7 +41,7 @@
 
 			TweenMax.set(element, {backgroundColor: 'rgba('+r+','+g+','+b+',1)'});
 			TweenMax.fromTo(element, 0.5, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease: Back.easeOut });
-			TweenMax.to(element, 2, {rotation: 360, repeat: -1, ease: Back.easeInOut, force3D: true });
+			TweenMax.to(element, 2, {rotation: 360, repeat: -1, ease: Back.easeInOut });
 		}
 	})
 	
@@ -53,7 +53,7 @@
 				if(count == 0){
 					clearInterval(interval);
 				}
-			}, 50)
+			}, 50);
 		}
 		function initButton( selector, count ){
 			App.DOMUtils.addEventListener(document.getElementById(selector), 'mousedown', function( e ){
