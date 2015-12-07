@@ -11,7 +11,7 @@ SP.X.extend('modules.DOMChangeHelper',['utils', 'DOMUtils', 'modules.Ticker'], f
 	var wasChanged = false;
 
 	var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-	if(MutationObserver && 1 == 2 ){
+	if(MutationObserver){
 		var observer = new MutationObserver(function(mutations, observer){
 			if(activeState){
 				if( mutations[0].addedNodes.length || mutations[0].removedNodes.length ){
