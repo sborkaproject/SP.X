@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="sp.x.min.js"></script>
+
+	<script src="extensions/delayedsrchelper.js"></script>
+	<script src="extensions/domchangehelper.js"></script>
+	<script src="extensions/domelementcontroller.js"></script>
+	<script src="extensions/domutils.js"></script>
+	<script src="extensions/environment.js"></script>
+	<script src="extensions/imageprocessor.js"></script>
+	<script src="extensions/scrollsmoothing.js"></script>
+	<script src="extensions/start.js"></script>
+	<script src="extensions/ticker.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+	
+	<script>
+	var App = new SP.X('App', true);
+
+	App.define('controller.FallController', function(){
+		return function FallController(block){
+			var size = block.outerWidth;
+			var endRotation = (Math.random() - 0.5) * 360
+
+			TweenMax.fromTo( block, 0.35, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease:Back.easeOut});
+			TweenMax.to( block, 1, {top: '100%', ease: Cubic.easeIn, rotation: endRotation, onComplete: function(){
+				TweenMax.to( block, 0.35, {rotation: Math.floor(endRotation / 90) * 90, y: -size/2, ease: Back.easeOut });
+				TweenMax.to( block, 0.75, {alpha: 0, delay: 0.35, overwrite: false, onComplete: function(){
+					document.body.removeChild(block);
+				}})
+			} })
+		}
+	})
+
+	App.define('factories.BlockFactory', function(){
+		function BlockFactory(){}
+		BlockFactory.prototype.create = function(x,y){
+			var newDiv = document.createElement('div');
+			newDiv.innerHTML = '<div class="falling" data-controller="controller.FallController"></div>';
+			newDiv = newDiv.childNodes[0];
+
+			document.body.appendChild(newDiv);
+
+			var top = (y / window.innerHeight * 100);
+			var size = 5 + Math.random() * 20;
+			var halfSize = size/2;
+			TweenMax.set(newDiv, {left: x, top: top + '%', width: size, height: size, marginLeft: -halfSize, marginTop: -halfSize, force3D: true})			
+		}
+		return new BlockFactory();
+	})
+
+	App.on(App.events.DOM_READY, function(){
+		var mousedown = false;
+		this.DOMUtils.addEventListener(document, 'mousedown', function( e ){
+			mousedown = true;
+
+			App.factories.BlockFactory.create(e.clientX, e.clientY);
+		})
+		this.DOMUtils.addEventListener(document, 'mousemove', function( e ){
+			if(mousedown){
+				e.preventDefault();
+				App.factories.BlockFactory.create(e.clientX, e.clientY);
+			}
+		})
+		this.DOMUtils.addEventListener(document, 'mouseup', function( e ){
+			mousedown = false;
+		})				
+	})
+	
+	</script>
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		html, body {
+			width:100%;
+			height:100%;
+			overflow: hidden;
+		}
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #FFFFFF;
+			cursor: default;
+		}
+		.falling{
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			background: rgba(0,0,0,0.5);
+			border-radius: 200px;
+		}
+	</style>
+</head>
+	<body>	</body>
+</html>
