@@ -31,9 +31,9 @@
 			gd = gd * (g >= 255 || g <= 0 ? -1 : 1);
 			bd = bd * (b >= 255 || b <= 0 ? -1 : 1);
 
-			r += rd * 10;
-			g += gd * 15;
-			b += bd * 20;
+			r += rd * 1;
+			g += gd * 2;
+			b += bd * 3;
 
 			r = r > 255 ? 255 : (r < 0 ? 0 : r);
 			g = g > 255 ? 255 : (g < 0 ? 0 : g);
@@ -41,14 +41,31 @@
 
 			TweenMax.set(element, {backgroundColor: 'rgba('+r+','+g+','+b+',1)'});
 			TweenMax.fromTo(element, 0.5, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease: Back.easeOut });
-			TweenMax.to(element, 2, {rotation: 360, repeat: -1, ease: Back.easeInOut });
+			TweenMax.to(element, 0.5, {y: -10, repeat: -1, yoyo: true});
 		}
 	})
 	
 	App.on(App.events.DOM_READY, function(){
 		function addBlocks( count ){
-			var interval = setInterval(function(){
+			/*
+			var startTime = App.utils.now();
+			var i = count;
+
+			App.modules.DOMChangeHelper.sleep();
+			while(i--){
 				document.body.appendChild(App.DOMUtils.createFromHTML('<div class="block" data-controller="controllers.RotateController"></div>'));
+			}
+			App.modules.DOMChangeHelper.wake()
+			window.scrollTo(0, Math.pow(9,9));
+
+			console.log('Added ' + count + ' block' + (count > 1 ? 's' : '') + ' in ' + (App.utils.now() - startTime) + 'ms')
+			*/
+			var interval = setInterval(function(){
+				var startTime = App.utils.now();
+				document.body.appendChild(App.DOMUtils.createFromHTML('<div class="block" data-controller="controllers.RotateController"></div>'));
+				console.log('Added block in ' + (App.utils.now() - startTime) + 'ms');
+				window.scrollTo(0, Math.pow(9,9));
+				
 				count--;
 				if(count == 0){
 					clearInterval(interval);
@@ -68,20 +85,17 @@
 	<style>
 		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
 		*{ padding:0; margin:0; }
-		html, body {
-			width:100%;
-			height:100%;
-			overflow-x: hidden;
-		}
 		body{
 			font: 400 13px/1 "PT Sans",sans-serif;
 			color: #000000;
 			background: #FFFFFF;
 			cursor: default;
+			margin-top: 50px;
 		}
 		.controls {
-			position: absolute;
+			position: fixed;
 			z-index: 9;
+			top: 0;
 		}
 		.button {
 			position: relative;
@@ -107,6 +121,7 @@
 			margin: 5px;
 			pointer-events: none;
 			-webkit-pointer-events: none;
+			border-radius: 100px;
 		}
 	</style>
 </head>

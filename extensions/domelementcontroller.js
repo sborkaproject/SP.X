@@ -33,7 +33,7 @@ SP.X.extend('modules.DOMElementController', ['utils', 'DOMUtils', 'modules.DOMCh
 		App.resolve(controller, function( controller ){
 			var newController = new controller( element );
 			element.controller = newController;
-		})			
+		})
 	}
 
 	function process(){

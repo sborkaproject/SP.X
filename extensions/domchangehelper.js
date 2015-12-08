@@ -6,10 +6,10 @@
 *
 * https://github.com/SborkaProject/SP.X 
 */
-SP.X.extend('modules.DOMChangeHelper',['utils', 'DOMUtils', 'modules.Ticker'], function( utils, DOMUtils, ticker ){
+SP.X.extend('modules.DOMChangeHelper', ['utils', 'DOMUtils', 'modules.Ticker'], function( utils, DOMUtils, ticker ){
 	var USE_TICKER = false;
 	var wasChanged = false;
-
+	
 	var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 	if(MutationObserver){
 		var observer = new MutationObserver(function(mutations, observer){
@@ -29,12 +29,13 @@ SP.X.extend('modules.DOMChangeHelper',['utils', 'DOMUtils', 'modules.Ticker'], f
 			}
 		});		
 	}
+	
 	var cachedHTML = '';
 	var needUpdate = false;
 	ticker.addListener(function(){
 		if(needUpdate){
 			needUpdate = false;
-			callListeners()
+			callListeners();
 		}
 		if(USE_TICKER){
 			var html = document.documentElement.innerHTML;

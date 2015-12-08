@@ -17,16 +17,16 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
 	
 	<script>
-	var App = new SP.X('App', true);
+	var App = new SP.X('App', false);
 
-	App.define('controller.FallController', function(){
-		return function FallController(block){
+	App.define('controller.BlockFallController', function(){
+		return function BlockFallController(block){
 			var size = block.outerWidth;
 			var endRotation = (Math.random() - 0.5) * 360
 
 			TweenMax.fromTo( block, 0.35, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease:Back.easeOut});
-			TweenMax.to( block, 1, {top: '100%', ease: Cubic.easeIn, rotation: endRotation, onComplete: function(){
-				TweenMax.to( block, 0.35, {rotation: Math.floor(endRotation / 90) * 90, y: -size/2, ease: Back.easeOut });
+			TweenMax.to( block, 1, {top: '103%', ease: Cubic.easeIn, rotation: endRotation, onComplete: function(){
+				TweenMax.to( block, 0.35, {rotation: Math.floor(endRotation / 90) * 90, y: -size/2, top: '100%',ease: Back.easeOut });
 				TweenMax.to( block, 0.75, {alpha: 0, delay: 0.35, overwrite: false, onComplete: function(){
 					document.body.removeChild(block);
 				}})
@@ -35,12 +35,32 @@
 	})
 
 	App.define('factories.BlockFactory', function(){
+
+		var r = 0;
+		var g = 0;
+		var b = 0;
+		var rd = 1;
+		var gd = 1;
+		var bd = 1;
+
 		function BlockFactory(){}
 		BlockFactory.prototype.create = function(x,y){
-			var newDiv = document.createElement('div');
-			newDiv.innerHTML = '<div class="falling" data-controller="controller.FallController"></div>';
-			newDiv = newDiv.childNodes[0];
+			rd = rd * (r >= 255 || r <= 0 ? -1 : 1);
+			gd = gd * (g >= 255 || g <= 0 ? -1 : 1);
+			bd = bd * (b >= 255 || b <= 0 ? -1 : 1);
 
+			r += rd * 0.5;
+			g += gd * 1.0;
+			b += bd * 1.5;
+
+			r = r > 255 ? 255 : (r < 0 ? 0 : r);
+			g = g > 255 ? 255 : (g < 0 ? 0 : g);
+			b = b > 255 ? 255 : (b < 0 ? 0 : b);
+
+			var newDiv = document.createElement('div');
+			newDiv.innerHTML = '<div class="falling" data-controller="controller.BlockFallController"></div>';
+			newDiv = newDiv.childNodes[0];
+			newDiv.style.backgroundColor = 'rgba('+(r<<0)+','+(g<<0)+','+(b<<0)+',1)';
 			document.body.appendChild(newDiv);
 
 			var top = (y / window.innerHeight * 100);
@@ -53,20 +73,30 @@
 
 	App.on(App.events.DOM_READY, function(){
 		var mousedown = false;
+		var x;
+		var y;
 		this.DOMUtils.addEventListener(document, 'mousedown', function( e ){
 			mousedown = true;
 
 			App.factories.BlockFactory.create(e.clientX, e.clientY);
 		})
 		this.DOMUtils.addEventListener(document, 'mousemove', function( e ){
+			x = e.clientX;
+			y = e.clientY;
 			if(mousedown){
 				e.preventDefault();
-				App.factories.BlockFactory.create(e.clientX, e.clientY);
+				App.factories.BlockFactory.create(x, y);
 			}
 		})
 		this.DOMUtils.addEventListener(document, 'mouseup', function( e ){
 			mousedown = false;
-		})				
+		})
+
+		App.modules.Ticker.addListener(function(){
+			if(mousedown){
+				App.factories.BlockFactory.create(x, y);
+			}
+		})		
 	})
 	
 	</script>
