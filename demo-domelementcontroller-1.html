@@ -19,7 +19,7 @@
 	<script>
 	var App = new SP.X('App', false);
 
-	App.define('controller.BlockFallController', function(){
+	App.define('controllers.BlockFallController', function(){
 		return function BlockFallController(block){
 			var size = block.outerWidth;
 			var endRotation = (Math.random() - 0.5) * 360
@@ -58,7 +58,7 @@
 			b = b > 255 ? 255 : (b < 0 ? 0 : b);
 
 			var newDiv = document.createElement('div');
-			newDiv.innerHTML = '<div class="falling" data-controller="controller.BlockFallController"></div>';
+			newDiv.innerHTML = '<div class="falling" data-controller="controllers.BlockFallController"></div>';
 			newDiv = newDiv.childNodes[0];
 			newDiv.style.backgroundColor = 'rgba('+(r<<0)+','+(g<<0)+','+(b<<0)+',1)';
 			document.body.appendChild(newDiv);
@@ -98,7 +98,6 @@
 			}
 		})		
 	})
-	
 	</script>
 	<style>
 		@import url(http://fonts.googleapis.com/css?family=PT+Sans);

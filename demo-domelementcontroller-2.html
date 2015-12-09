@@ -47,19 +47,6 @@
 	
 	App.on(App.events.DOM_READY, function(){
 		function addBlocks( count ){
-			/*
-			var startTime = App.utils.now();
-			var i = count;
-
-			App.modules.DOMChangeHelper.sleep();
-			while(i--){
-				document.body.appendChild(App.DOMUtils.createFromHTML('<div class="block" data-controller="controllers.RotateController"></div>'));
-			}
-			App.modules.DOMChangeHelper.wake()
-			window.scrollTo(0, Math.pow(9,9));
-
-			console.log('Added ' + count + ' block' + (count > 1 ? 's' : '') + ' in ' + (App.utils.now() - startTime) + 'ms')
-			*/
 			var interval = setInterval(function(){
 				var startTime = App.utils.now();
 				document.body.appendChild(App.DOMUtils.createFromHTML('<div class="block" data-controller="controllers.RotateController"></div>'));
@@ -75,6 +62,7 @@
 		function initButton( selector, count ){
 			App.DOMUtils.addEventListener(document.getElementById(selector), 'mousedown', function( e ){
 				addBlocks( count );
+				TweenMax.fromTo( this, 0.35, {scale: 0.95}, {scale: 1})
 			})
 		}
 		initButton('add_1', 1);
