@@ -48,10 +48,12 @@ App.define('modules.TestModule', ['modules.A', 'modules.B', 'modules.C'], functi
 
 ### Для того, чтобы "поймать" момент создания некоторой сущности, существует такой механизм:
 
+```javascript
 App.resolve('modules.TestModule', function(TestModule){
 	// Эта функция будет запущена в момент появления TestModule
 	// или сразу, если TestModule уже существует
 });
+```
 
 Если необходимо "ловить" сразу несколько зависимостей, то можно передавать их массивом:
 
