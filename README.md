@@ -10,8 +10,11 @@ var App = new SP.X('App', true, true);
 ```
 
 SP.X принимает следующие аргументы:
+
 name — название контроллера
+
 debug — флаг режима отладки (вывод данных в консоль)
+
 skipExportToGlobal — флаг отмены записи ссылки на контроллер в глобальный контекст (window)
 
 
@@ -151,8 +154,8 @@ SP.X.LogEngine.create( myObject );
 Аналогичным образом работают движки для define/resolve и событий:
 
 ```javascript
-SP.X.EventsEngine.create( myObject );
 SP.X.DefineResolveEngine.create( myObject );
+SP.X.EventsEngine.create( myObject );
 ```
 
 Соответственно, они добавят свой функционал для любого объекта.
