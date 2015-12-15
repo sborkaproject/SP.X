@@ -2,23 +2,23 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<script src="sp.x.min.js"></script>
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
 
-	<script src="extensions/delayedsrchelper.js"></script>
-	<script src="extensions/domchangehelper.js"></script>
-	<script src="extensions/domelementcontroller.js"></script>
-	<script src="extensions/domutils.js"></script>
-	<script src="extensions/environment.js"></script>
-	<script src="extensions/imageprocessor.js"></script>
-	<script src="extensions/scrollsmoothing.js"></script>
-	<script src="extensions/start.js"></script>
-	<script src="extensions/ticker.js"></script>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+	<script src="vendor/tweenmax.js"></script>
 	
 	<script>
-		var App = new SP.X('App', true);
+		var App = new SP.X('App', false);
 	</script>
+	
 	<style>
 		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
 		*{ padding:0; margin:0; }

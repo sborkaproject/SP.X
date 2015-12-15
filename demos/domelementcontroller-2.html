@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
+
+	<script src="vendor/tweenmax.js"></script>
+	
+	<script>
+		var App = new SP.X('App', false);
+
+		App.define('controllers.RotateController', function(){
+			var r = 0;
+			var g = 0;
+			var b = 0;
+			var rd = 1;
+			var gd = 1;
+			var bd = 1;
+			return function RotateController( element ){
+				rd = rd * (r >= 255 || r <= 0 ? -1 : 1);
+				gd = gd * (g >= 255 || g <= 0 ? -1 : 1);
+				bd = bd * (b >= 255 || b <= 0 ? -1 : 1);
+
+				r += rd * 1;
+				g += gd * 2;
+				b += bd * 3;
+
+				r = r > 255 ? 255 : (r < 0 ? 0 : r);
+				g = g > 255 ? 255 : (g < 0 ? 0 : g);
+				b = b > 255 ? 255 : (b < 0 ? 0 : b);
+
+				TweenMax.set(element, {backgroundColor: 'rgba('+r+','+g+','+b+',1)'});
+				TweenMax.fromTo(element, 0.5, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease: Back.easeOut });
+				TweenMax.to(element, 0.5, {y: -10, repeat: -1, yoyo: true});
+			}
+		})
+		
+		App.on(App.events.DOM_READY, function(){
+			function addBlocks( count ){
+				var interval = setInterval(function(){
+					var startTime = App.utils.now();
+					document.body.appendChild(App.DOMUtils.createFromHTML('<div class="block" data-controller="controllers.RotateController"></div>'));
+					console.log('Added block in ' + (App.utils.now() - startTime) + 'ms');
+					window.scrollTo(0, Math.pow(9,9));
+					
+					count--;
+					if(count == 0){
+						clearInterval(interval);
+					}
+				}, 50);
+			}
+			function initButton( selector, count ){
+				App.DOMUtils.addEventListener(document.getElementById(selector), 'mousedown', function( e ){
+					addBlocks( count );
+					TweenMax.fromTo( this, 0.35, {scale: 0.95}, {scale: 1})
+				})
+			}
+			initButton('add_1', 1);
+			initButton('add_10', 10);
+			initButton('add_100', 100);
+		})
+	</script>
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #FFFFFF;
+			cursor: default;
+			margin-top: 50px;
+		}
+		.controls {
+			position: fixed;
+			z-index: 9;
+			top: 0;
+		}
+		.button {
+			position: relative;
+			padding: 10px;
+			background: #000000;
+			color: #FFFFFF;
+			float: left;
+			margin-top: 5px;
+			margin-left: 5px;
+			cursor: pointer;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			-webkit-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		.block {
+			position: relative;
+			width: 40px;
+			height: 40px;
+			background: #FF7700;
+			float: left;
+			margin: 5px;
+			pointer-events: none;
+			-webkit-pointer-events: none;
+			border-radius: 100px;
+		}
+	</style>
+</head>
+	<body>
+		<div class="controls">
+			<div class="button" id="add_1">Add block</div>
+			<div class="button" id="add_10">Add 10 blocks</div>
+			<div class="button" id="add_100">Add 100 blocks</div>
+		</div>
+	</body>
+</html>

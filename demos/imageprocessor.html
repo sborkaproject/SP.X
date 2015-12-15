@@ -2,43 +2,42 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<script src="sp.x.min.js"></script>
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
 
-	<script src="extensions/delayedsrchelper.js"></script>
-	<script src="extensions/domchangehelper.js"></script>
-	<script src="extensions/domelementcontroller.js"></script>
-	<script src="extensions/domutils.js"></script>
-	<script src="extensions/environment.js"></script>
-	<script src="extensions/imageprocessor.js"></script>
-	<script src="extensions/scrollsmoothing.js"></script>
-	<script src="extensions/start.js"></script>
-	<script src="extensions/ticker.js"></script>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+	<script src="vendor/tweenmax.js"></script>
 	
 	<script>
-	var App = new SP.X('App', true);
+		var App = new SP.X('App', false);
 
-	App.on(App.events.DOM_READY, function(e){
+		App.on(App.events.DOM_READY, function(e){
 
-		TweenMax.fromTo(document.body, 0.5, {alpha: 0}, {alpha: 1, delay: 0.1});
+			TweenMax.fromTo(document.body, 0.5, {alpha: 0}, {alpha: 1, delay: 0.1});
 
-		var preloaderLine = document.getElementById('preloader-line');
-		TweenMax.set(preloaderLine, {width: '0%'});
+			var preloaderLine = document.getElementById('preloader-line');
+			TweenMax.set(preloaderLine, {width: '0%'});
 
-		// container, collectHandler, progressHandler, completeHandler, deepMode
-		this.modules.ImageProcessor.manage( document.body, function( collectedElements ){
-			TweenMax.set(collectedElements, {alpha: 0});
+			// container, collectHandler, progressHandler, completeHandler, deepMode
+			this.modules.ImageProcessor.manage( document.body, function( collectedElements ){
+				TweenMax.set(collectedElements, {alpha: 0});
 
-		}, function( e ){
-			TweenMax.fromTo(e.element, 0.35, {alpha: 0}, {alpha: 1});
-			TweenMax.to(preloaderLine, 0.35, {width: (e.progress * 100) + '%'});
+			}, function( e ){
+				TweenMax.fromTo(e.element, 0.35, {alpha: 0}, {alpha: 1});
+				TweenMax.to(preloaderLine, 0.35, {width: (e.progress * 100) + '%'});
 
-		}, function( e ){
-			TweenMax.to(preloaderLine, 0.35, {width: '100%', autoAlpha: 0});
+			}, function( e ){
+				TweenMax.to(preloaderLine, 0.35, {width: '100%', autoAlpha: 0});
 
-		}, true );
-	})
+			}, true );
+		})
 	</script>
 	<style>
 		@import url(http://fonts.googleapis.com/css?family=PT+Sans);

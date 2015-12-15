@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
+
+	<script src="vendor/tweenmax.js"></script>
+	
+	<script>
+		var App = new SP.X('App', false);
+
+		App.define('controllers.TestController', function(){
+			return function RotateController( element, elementData ){
+				element.innerHTML = elementData.text;
+				if(elementData.animation){
+					TweenMax.set(element, {transformPerspective: 300});
+					TweenMax.to(element, 1, elementData.animation);
+				}
+			}
+		})
+	</script>
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #FFFFFF;
+			cursor: default;
+			margin-top: 50px;
+		}
+		div{
+			position: absolute;
+			width: 200px;
+			height: 20px;
+			text-align: center;
+			top: 50%;
+			left: 50%;
+			margin-top: -10px;
+			margin-left: -100px;
+			background: #334455;
+			color: white;
+			font-size: 20px;
+			line-height: 20px;
+			text-shadow: 0 0 5px rgba(0,0,0,0.5);
+		}
+	</style>
+</head>
+	<body>
+		<div data-controller="controllers.TestController" data-controller-data="text:'Hello world!',animation:{rotationX:'+=360',yoyo:true,repeat:-1,repeatDelay:2,ease:Back.easeInOut}"></div>
+	</body>
+</html>

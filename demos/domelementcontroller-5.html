@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
+
+	<script src="vendor/tweenmax.js"></script>
+	
+	<script>
+		var App = new SP.X('App', false);
+
+		App.define('controllers.TestController', ['DOMUtils'], function(DOMUtils){
+
+			var r = 20;
+			var g = 20;
+			var b = 20;
+			var rd = 1;
+			var gd = 1;
+			var bd = 1;
+
+			return function TestController( element, elementData ){
+				var created = false;
+				DOMUtils.addEventListener(element, 'mouseenter', function( e ){
+					if(!created){
+						created = true;
+						element.style.background = 'none';
+
+						rd = rd * (r >= 255 || r <= 0 ? -1 : 1);
+						gd = gd * (g >= 255 || g <= 0 ? -1 : 1);
+						bd = bd * (b >= 255 || b <= 0 ? -1 : 1);
+
+						r += rd * 1;
+						g += gd * 2;
+						b += bd * 3;
+
+						r = r > 255 ? 255 : (r < 0 ? 0 : r);
+						g = g > 255 ? 255 : (g < 0 ? 0 : g);
+						b = b > 255 ? 255 : (b < 0 ? 0 : b);
+
+						var html = '';
+						for(var k=0; k<4; k++){
+							html += '<div class="test x'+(k + 1)+'" style="background: rgba('+r+','+g+','+b+',1)" data-controller="controllers.TestController"></div>';
+						}
+						element.innerHTML = html;
+						TweenMax.staggerFromTo(element.childNodes, 0.5, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease: Back.easeOut }, 0.05)
+					}
+				})
+			}
+		})
+	</script>
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		html, body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #000000;
+			cursor: default;
+		}
+		.container{
+			position: absolute;
+			width: 100vw;
+			height: 100vw;
+			top: 0;
+			left: 0;
+		}
+		.test{
+			position: absolute;
+			width: 50%;
+			height: 50%;
+			border-radius: 1000px;
+			background-color: rgba(0,0,0,1);
+		}
+		.test.x1{ top: 0%; left: 0%; }
+		.test.x2{ top: 0%; left: 50%; }
+		.test.x3{ top: 50%; left: 50%; }
+		.test.x4{ top: 50%; left: 0%; }
+
+		.counter{
+			background: red;
+			color: white;
+			font-size: 11px;
+		}
+	</style>
+</head>
+	<body>
+		<div class="container" data-controller="controllers.TestController"></div>
+	</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
+
+	<script src="vendor/tweenmax.js"></script>
+	
+	<script>
+		var App = new SP.X('App', false);
+
+		App.define('controllers.TestController', function(){
+			var counter = 1;
+			var r = 0;
+			var g = 0;
+			var b = 0;
+			return function TestController( element, elementData ){
+				if(++counter <= 300){
+					r += 1;
+					g += 1.5;
+					b += 2;
+					r = r > 255 ? 255 : r;
+					g = g > 255 ? 255 : g;
+					b = b > 255 ? 255 : b;
+
+					var html = '<div class="test" ';
+						html += 'data-controller="controllers.TestController" ';
+						html += 'style="background: rgba('+(r<<0)+','+(g<<0)+','+(b<<0)+',1); border-radius: ' + (counter * 2) + 'px">';
+						html += '<span class="counter">' + counter + '</span>'
+						html += '</div>'
+
+					element.innerHTML = html;
+				}
+			}
+		})
+	</script>
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #000000;
+			cursor: default;
+			margin-top: 50px;
+		}
+		.test{
+			position: absolute;
+			top: 0.5%;
+			left: 0.5%;
+			right: 0.5%;
+			bottom: 0.5%;
+			background-color: rgba(0,0,0,0.01);
+		}
+		.counter{
+			background: red;
+			color: white;
+			font-size: 11px;
+		}
+	</style>
+</head>
+	<body data-controller="controllers.TestController">
+	</body>
+</html>

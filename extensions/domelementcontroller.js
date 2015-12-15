@@ -10,9 +10,16 @@ SP.X.extend('modules.DOMElementController', ['utils', 'DOMUtils', 'modules.DOMCh
 	var App = this;
 
 	var CONTROLLER_ATTRIBUTE_NAME = 'data-controller';
+	var CONTROLLER_DATA_ATTRIBUTE_NAME = 'data-controller-data';
 
 	var cachedElements = [];
 	var watchMode = true;
+
+	function resolveElementController( element, controller, controllerData ){
+		App.resolve(controller, function( controller ){
+			element.controller = new controller( element, controllerData );
+		})
+	}
 
 	function manageElement( element ){
 		var totalCachedElements = cachedElements.length;
@@ -26,14 +33,21 @@ SP.X.extend('modules.DOMElementController', ['utils', 'DOMUtils', 'modules.DOMCh
 		element.removeAttribute(CONTROLLER_ATTRIBUTE_NAME);
 		if(controller == '' || !utils.isSet(controller)){ return; }
 
-		if(utils.isSet(element.controller)){
-			// How to remove current controller?
+		var controllerDataString = element.getAttribute(CONTROLLER_DATA_ATTRIBUTE_NAME);
+		var controllerData;
+		if(controllerDataString && controllerDataString != ''){
+			try{
+				if(controllerDataString.substr(0,1) != '({'){
+					controllerDataString = '({' + controllerDataString +'})';
+				}
+				controllerData = eval(controllerDataString);
+			} catch(e){
+				App.warn('Could not extract controller data: ' + controllerDataString)
+				controllerData = {};
+			}
 		}
 
-		App.resolve(controller, function( controller ){
-			var newController = new controller( element );
-			element.controller = newController;
-		})
+		resolveElementController( element, controller, controllerData )
 	}
 
 	function process(){
