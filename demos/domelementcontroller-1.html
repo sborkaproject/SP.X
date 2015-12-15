@@ -45,6 +45,9 @@
 
 			function BlockFactory(){}
 			BlockFactory.prototype.create = function(x,y){
+				if(isNaN(x) || isNaN(y)){
+					return;
+				}
 				rd = rd * (r >= 255 || r <= 0 ? -1 : 1);
 				gd = gd * (g >= 255 || g <= 0 ? -1 : 1);
 				bd = bd * (b >= 255 || b <= 0 ? -1 : 1);
@@ -77,12 +80,13 @@
 			var y;
 			this.DOMUtils.addEventListener(document, 'mousedown touchstart', function( e ){
 				mousedown = true;
-
-				App.factories.BlockFactory.create(e.clientX, e.clientY);
+				x = e.clientX || e.touches[0].clientX;
+				y = e.clientY || e.touches[0].clientY;
+				App.factories.BlockFactory.create(x, y);
 			})
 			this.DOMUtils.addEventListener(document, 'mousemove touchmove', function( e ){
-				x = e.clientX;
-				y = e.clientY;
+				x = e.clientX || e.touches[0].clientX;
+				y = e.clientY || e.touches[0].clientY;
 				if(mousedown){
 					e.preventDefault();
 					App.factories.BlockFactory.create(x, y);
