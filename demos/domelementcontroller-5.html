@@ -30,7 +30,7 @@
 
 			return function TestController( element, elementData ){
 				var created = false;
-				DOMUtils.addEventListener(element, 'mouseenter', function( e ){
+				DOMUtils.addEventListener(element, 'mouseenter mousedown touchstart', function( e ){
 					if(!created){
 						created = true;
 						element.style.background = 'none';

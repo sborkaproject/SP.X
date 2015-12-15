@@ -75,12 +75,12 @@
 			var mousedown = false;
 			var x;
 			var y;
-			this.DOMUtils.addEventListener(document, 'mousedown', function( e ){
+			this.DOMUtils.addEventListener(document, 'mousedown touchstart', function( e ){
 				mousedown = true;
 
 				App.factories.BlockFactory.create(e.clientX, e.clientY);
 			})
-			this.DOMUtils.addEventListener(document, 'mousemove', function( e ){
+			this.DOMUtils.addEventListener(document, 'mousemove touchmove', function( e ){
 				x = e.clientX;
 				y = e.clientY;
 				if(mousedown){
@@ -88,7 +88,7 @@
 					App.factories.BlockFactory.create(x, y);
 				}
 			})
-			this.DOMUtils.addEventListener(document, 'mouseup', function( e ){
+			this.DOMUtils.addEventListener(document, 'mouseup touchend', function( e ){
 				mousedown = false;
 			})
 
