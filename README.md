@@ -3,6 +3,10 @@ SP.X tiny framework
 
 Собственно, это небольшой фреймворк для наших проектов.
 
+Демки можно посмотреть [здесь](https://rawgit.com/sborkaproject/SP.X/master/demos/).
+
+---
+
 ### Создание основного контроллера:
 
 ```javascript
