@@ -37,10 +37,10 @@ SP.X.extend('modules.Ticker', ['utils'], function( utils ){
  	var applyArgs = [];
 	var listeners = [];
 	var prevTime = utils.now();
-
+	var timeScale = 1;
 	function tickHandler( nowTime ){
 
-		var delta = nowTime - prevTime;
+		var delta = (nowTime - prevTime) * timeScale;
 		prevTime = nowTime;
 
 		if(activeState){
@@ -79,6 +79,13 @@ SP.X.extend('modules.Ticker', ['utils'], function( utils ){
 		activeState = true;
 		return this;
 	}
+	Ticker.prototype.timeScale = function( value ){
+		if(utils.isSet(value)){ timeScale = value; }
+		return timeScale;
+	}	
+	Ticker.prototype.toggle = function(){
+		return (activeState ? this.stop() : this.start());
+	}	
 	Ticker.prototype.isActive = function(){
 		return activeState;
 	}

@@ -20,8 +20,7 @@ SP.X.extend('start', function(){
 
 	return function start( objectPath, argumentsArray ){
 		if(controllerStarted){
-			App.error('Start controller already started!');
-			return;
+			return App.error('Start controller already started!');
 		}
 		if(controllerSetted){
 			App.warn('Start controller already defined! Overwriting to \'' + objectPath + '\'');

@@ -34,7 +34,7 @@
 	var LOG_TESTED = false;
 	var LOG_PREFIX = '\tSP.X: ';
 	var LOG_STYLE_PREFIX = '%c';
-	var LOG_TEXT_STYLE = 'font-size:11px;font-style:italic;'
+	var LOG_TEXT_STYLE = 'font-size:11px;font-style:italic;';
 	var LOG_STYLES = {
 		LOG:	'color:#999999;' + LOG_TEXT_STYLE,
 		ERROR:	'color:#FF0000;' + LOG_TEXT_STYLE,
@@ -532,7 +532,7 @@
 
 		instance.define = function( objectPath, dependencies, handler ){
 			if( !utils.isString(objectPath) ){
-				return error('No objectPath passed to define!')
+				return error('No objectPath passed to define!');
 			}
 
 			lastDefinedObjectPath = objectPath;
@@ -540,7 +540,7 @@
 				objectName = objectPathArray.pop();
 
 			if( objectName == '' ){
-				return error('define must have objectPath (objectName) argument!')
+				return error('define must have objectPath (objectName) argument!');
 			}
 
 			if( utils.isFunction(dependencies) ){
@@ -644,8 +644,8 @@
 				warn('Empty definitions:');
 				for(var k=0;k<totalEmptyDefines;k++){
 					var emptyDefine = emptyDefines[k];
-					log(emptyDefine.objectPath)
-					log('#' + (k+1) + '\t' + emptyDefine.emptyDependencies.join(', '))
+					log(emptyDefine.objectPath);
+					log('#' + (k+1) + '\t' + emptyDefine.emptyDependencies.join(', '));
 				}
 			} else {
 				mark('All definitions ok');
@@ -655,12 +655,12 @@
 				warn('Empty resolves:');
 				for(var k=0;k<totalEmptyResolves;k++){
 					var emptyResolve = emptyResolves[k];
-					log('#' + (k+1) + '\t' + emptyResolve.emptyDependencies.join(', '))
+					log('#' + (k+1) + '\t' + emptyResolve.emptyDependencies.join(', '));
 				}
 			} else {
 				mark('All resolves ok');
 			}
-			return { emptyDefines: emptyDefines, emptyResolves: emptyResolves }
+			return { emptyDefines: emptyDefines, emptyResolves: emptyResolves };
 		}
 		return instance;
 	}
@@ -672,7 +672,7 @@
 
 		var utils = X.Utils;
 
-		var debugState = { debug : !!debug }
+		var debugState = { debug : !!debug };
 
 		var instance = utils.createNamedObject( name, {
 			debug : function( value ){
@@ -717,7 +717,7 @@
 			if( utils.isSet(factory[name]) ){
 				instance.log( name + ' already defined: skipping export to global scope' );
 			} else {
-				instance.mark( name + ' added to global scope' )
+				instance.mark( name + ' added to global scope' );
 				factory[name] = instance;
 			}
 		}

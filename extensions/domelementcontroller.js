@@ -13,27 +13,11 @@ SP.X.extend('modules.DOMElementController', ['utils', 'DOMUtils', 'modules.DOMCh
 	var CONTROLLER_DATA_ATTRIBUTE_NAME = 'data-controller-data';
 
 	var cachedElements = [];
+	var aliases = [];
 	var watchMode = true;
 
-	function resolveElementController( element, controller, controllerData ){
-		App.resolve(controller, function( controller ){
-			element.controller = new controller( element, controllerData );
-		})
-	}
-
-	function manageElement( element ){
-		var totalCachedElements = cachedElements.length;
-		for(var k=0;k<totalCachedElements;k++){
-			if(cachedElements[k] === element ){
-				return;
-			}
-		}
-		var controller = element.getAttribute(CONTROLLER_ATTRIBUTE_NAME);
-
-		element.removeAttribute(CONTROLLER_ATTRIBUTE_NAME);
-		if(controller == '' || !utils.isSet(controller)){ return; }
-
-		var controllerDataString = element.getAttribute(CONTROLLER_DATA_ATTRIBUTE_NAME);
+	function getAttributeData( element, attributeName ){
+		var controllerDataString = element.getAttribute(attributeName);
 		var controllerData;
 		if(controllerDataString && controllerDataString != ''){
 			try{
@@ -42,19 +26,50 @@ SP.X.extend('modules.DOMElementController', ['utils', 'DOMUtils', 'modules.DOMCh
 				}
 				controllerData = eval(controllerDataString);
 			} catch(e){
-				App.warn('Could not extract controller data: ' + controllerDataString)
+				App.warn('Could not extract controller data: ' + controllerDataString);
 				controllerData = {};
 			}
 		}
+		return controllerData;
+	}
 
-		resolveElementController( element, controller, controllerData )
+	function manageElement( element, controllerPath, controllerData ){
+		var totalCachedElements = cachedElements.length;
+		for(var k=0;k<totalCachedElements;k++){
+			if(cachedElements[k] === element ){
+				return;
+			}
+		}
+		App.resolve(controllerPath, function( controller ){
+			element.controller = new controller( element, controllerData );
+		})
 	}
 
 	function process(){
 		var elements = DOMUtils.getElementsByAttributeName(CONTROLLER_ATTRIBUTE_NAME);
 		var totalElements = elements.length;
 		for(var k=0;k<totalElements;k++){
-			manageElement( elements[k] );
+			var element = elements[k];
+			var controllerPath = element.getAttribute(CONTROLLER_ATTRIBUTE_NAME);
+			element.removeAttribute(CONTROLLER_ATTRIBUTE_NAME);
+			if(utils.isSet(controllerPath) && controllerPath != ''){
+				manageElement( element, controllerPath, getAttributeData( element, CONTROLLER_DATA_ATTRIBUTE_NAME ) );
+				element.removeAttribute(CONTROLLER_DATA_ATTRIBUTE_NAME);
+			}
+		};
+
+		var totalAliases = aliases.length;
+		for(var k=0; k<totalAliases; k++){
+			var aliasData = aliases[k];
+			var aliasName = aliasData[0];
+			var aliasControllerPath = aliasData[1];
+			var elements = DOMUtils.getElementsByAttributeName(aliasName);
+			var totalElements = elements.length;
+			for(var j=0; j<totalElements; j++){
+				var element = elements[j];
+				manageElement( element, aliasControllerPath, getAttributeData( element, aliasName ) );
+				element.removeAttribute(aliasName);
+			}
 		}
 	}
 
@@ -77,6 +92,11 @@ SP.X.extend('modules.DOMElementController', ['utils', 'DOMUtils', 'modules.DOMCh
 	DOMElementController.prototype.unwatch = DOMElementController.prototype.sleep = function( element ){
 		watchMode = false;
 		return this;
+	}
+
+	DOMElementController.prototype.registerAlias = function( attrName, controllerPath ){
+		aliases.push([attrName, controllerPath]);
+		return this.update();
 	}
 
 	var instance = new DOMElementController();

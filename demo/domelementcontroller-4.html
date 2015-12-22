@@ -25,15 +25,15 @@
 			var g = 0;
 			var b = 0;
 			return function TestController( element, elementData ){
-				if(++counter <= 300){
-					r += 1;
-					g += 1.5;
-					b += 2;
+				if(++counter <= 500){
+					r += 0.75;
+					g += 1;
+					b += 1.25;
 					r = r > 255 ? 255 : r;
 					g = g > 255 ? 255 : g;
 					b = b > 255 ? 255 : b;
 
-					var html = '<div class="test" ';
+					var html =  '<div class="test" ';
 						html += 'data-controller="controllers.TestController" ';
 						html += 'style="background: rgba('+(r<<0)+','+(g<<0)+','+(b<<0)+',1); border-radius: ' + (counter * 2) + 'px">';
 						html += '<span class="counter">' + counter + '</span>'
@@ -56,10 +56,10 @@
 		}
 		.test{
 			position: absolute;
-			top: 0.5%;
-			left: 0.5%;
-			right: 0.5%;
-			bottom: 0.5%;
+			top: 0.25%;
+			left: 0.25%;
+			right: 0.25%;
+			bottom: 0.25%;
 			background-color: rgba(0,0,0,0.01);
 		}
 		.counter{

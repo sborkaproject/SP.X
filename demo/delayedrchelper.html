@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SP.X Demo</title>
+	<meta charset="utf-8">
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
+
+	<script src="vendor/tweenmax.js"></script>
+	
+	<script>
+		var App = new SP.X('App', false);
+		/*
+		
+		App.resolve('modules.DelayedSRCHelper', function(DelayedSRCHelper){
+			// Overwrite default effects
+			DelayedSRCHelper.setImageLoadingEffects(function(image){
+				// Loading start
+				image.style.opacity = 0;
+			},function(image){
+				// Loading complete
+				image.style.opacity = 1;
+			},function(image){
+				// Loading error
+				image.style.opacity = 1;
+				image.style.outline = '1px solid red';
+			})
+
+			// Remove all effects:
+			DelayedSRCHelper.clearImageLoadingEffects();
+			DelayedSRCHelper.clearBackgroundLoadingEffects();
+		})
+		*/
+		var ids = [	20040, 20056, 20058, 20097, 20105, 20109, 20140, 20145, 20147, 20219,
+					20224, 20239, 20246, 20248, 20252, 20260, 20267, 20292, 20294, 20304,
+					20306, 20318, 20358, 20399, 20469, 20486, 20495, 20509, 20510, 20527,
+					20532, 20537, 20550, 20556, 20568, 20591, 20619, 20626, 20627, 20659,
+					20661, 20664, 20685, 20713, 20717, 20751, 20762, 20806, 20819, 20854,
+					20870, 20873, 20911, 20928, 20961, 20966, 20974, 20975, 20982, 20991,
+					20993, 21004, 21018, 21028, 21045, 21066, 21074, 21079, 21081, 21084,
+					21094, 21121, 21134, 21136, 21149, 21158, 21159, 21167, 21200, 21206,
+					21218, 21249, 21308, 21326, 21331, 21336, 21348, 21354, 21357, 21373,
+					21375, 21419, 21435, 21436, 21496, 21511, 21543, 21562, 21587, 21607,
+					21615, 21618, 21620, 21629, 21641, 21652, 21660, 21664, 21678, 21714,
+					21725, 21740, 21744, 21753, 21770, 21772, 21783, 21796, 21810, 21814,
+					21816, 21818, 21836, 21859, 21874, 21898, 21906, 21907, 21922, 21929,
+					21932, 21952, 22098, 22110, 22122, 22145, 22153, 22154, 22178, 22182,
+					22184, 22220, 22239, 22255, 22266, 22281, 22289, 22291, 22317, 22330,
+					22336, 22343, 22356, 22360, 22393, 22397, 22399, 22403, 22408, 22409,
+					22424, 22448, 22463, 22476, 22479, 22499, 22523, 22526, 22538, 22544,
+					22589, 22599, 22603, 22621, 22629, 22647, 22650, 22651, 22756, 22757,
+					22759, 22764, 22781, 22798, 22857, 22890, 22901, 22912, 22971, 22978,
+					22989, 23013, 23054, 23066, 23079, 23084, 23087, 23103, 23105, 23147,
+					23179, 23205, 23218, 23295, 23316, 23338, 23344, 23352, 23358, 23370,
+					23374, 23376, 23385, 23396, 23442, 23479, 23498, 23516, 23530, 23564,
+					23568, 23574, 23592, 23653, 23659, 23667, 23704, 23767, 23835, 23840,
+					23941, 23946, 23950, 23980, 24008, 24045, 24129, 24150, 24177, 24186,
+					24212, 24288, 24296, 24300, 24303, 24312, 24336, 24345, 24346, 24361,
+					24362, 24384, 24389, 24474, 24557, 24585, 24591, 24597, 24605, 24608];
+
+		App.on(App.events.DOM_READY, function(){
+			var addImagesButton = document.getElementById('add-images');
+
+			this.DOMUtils.addEventListener(addImagesButton, 'mousedown touchstart', function(){
+				var totalImages = ids.length;
+				var html = '';
+				for(var k=0; k<totalImages; k++){
+					html += '<img alt="" data-src="http://www.flasher.ru/forum/image.php?u=' + ids[k] + '">';
+				}
+				document.body.innerHTML = html;
+			})	 
+		})
+
+	</script>
+	
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		html, body {
+			width:100%;
+			height:100%;
+			overflow-x: hidden;
+		}
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #FFFFFF;
+			cursor: default;
+		}
+		img{
+			position: relative;
+			width: 50px;
+			height: 50px;
+			margin: 5px;
+			float: left;
+			-webkit-transition: opacity 0.15s ease-out, outline 0.15s ease-out; 
+			        transition: opacity 0.15s ease-out, outline 0.15s ease-out; 
+		}
+		.controls {
+			position: fixed;
+			z-index: 9;
+			top: 0;
+		}
+		.button {
+			position: relative;
+			padding: 10px;
+			background: #000000;
+			color: #FFFFFF;
+			float: left;
+			margin-top: 5px;
+			margin-left: 5px;
+			cursor: pointer;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			-webkit-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		.button._active{
+			outline: 1px solid green;
+		}
+		.button._unactive{
+			outline: 1px solid red;
+		}		
+	</style>
+</head>
+	<body>
+		<div class="controls">
+			<div class="button" id="add-images">Add images with data-src attributes</div>
+		</div>
+	</body>
+</html>

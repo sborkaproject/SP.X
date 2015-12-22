@@ -46,11 +46,18 @@ SP.X.extend('DOMUtils', ['utils'], function( utils ){
 				element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(SPACE).join('|') + '(\\b|$)', 'gi'), SPACE);
 			}
 		},
-		injectCSS : function( cssText ){
+		injectCSS: function( cssText ){
 			try{
-				var node = document.createElement('style');
-					node.innerHTML = cssText;
-				document.head.appendChild(node);
+				var styleElement = document.createElement('style');
+					styleElement.type = 'text/css';
+
+				if (styleElement.styleSheet) {
+					styleElement.styleSheet.cssText = cssText;
+				} else {
+					styleElement.appendChild(document.createTextNode(cssText));
+				}
+				document.getElementsByTagName('head')[0].appendChild(styleElement);
+
 				return true;
 			} catch( e ){
 				return false;

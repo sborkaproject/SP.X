@@ -7,9 +7,12 @@
 * https://github.com/SborkaProject/SP.X 
 */
 SP.X.extend('modules.DOMChangeHelper', ['utils', 'DOMUtils', 'modules.Ticker'], function( utils, DOMUtils, ticker ){
-	var USE_TICKER = false;
+	var USE_TICKER = true;
+	var MAX_ITERATIONS = 1000;
+	var MAX_UPDATE_TIME = 16 * 5; // max 5 frames lag
+
 	var wasChanged = false;
-	
+
 	var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 	if(MutationObserver){
 		var observer = new MutationObserver(function(mutations, observer){
@@ -29,21 +32,34 @@ SP.X.extend('modules.DOMChangeHelper', ['utils', 'DOMUtils', 'modules.Ticker'], 
 			}
 		});		
 	}
-	
+
 	var cachedHTML = '';
 	var needUpdate = false;
 	ticker.addListener(function(){
-		if(needUpdate){
-			needUpdate = false;
-			callListeners();
-		}
-		if(USE_TICKER){
-			var html = document.documentElement.innerHTML;
-			if(html!=cachedHTML){
-				wasChanged = true;
-				cachedHTML = html;
-				if(activeState){
-					changeHandler();
+		var startTime = utils.now();
+		for(var k=0; k<MAX_ITERATIONS;k++){
+			if(needUpdate){
+				needUpdate = false;
+				callListeners();
+			}
+			if(USE_TICKER){
+				var html = document.documentElement.innerHTML;
+				if(html!=cachedHTML){
+					wasChanged = true;
+					cachedHTML = html;
+					if(activeState){
+						changeHandler();
+						if(document.documentElement.innerHTML != html){
+							needUpdate = true;
+						}
+					}
+				}
+			}
+			if(needUpdate == false){
+				break;
+			} else {
+				if(utils.now() - startTime > MAX_UPDATE_TIME){
+					break;
 				}
 			}
 		}
@@ -86,6 +102,9 @@ SP.X.extend('modules.DOMChangeHelper', ['utils', 'DOMUtils', 'modules.Ticker'], 
 			changeHandler();
 		}
 		return this;
+	}
+	DOMChangeHelper.prototype.toggle = function(){
+		return (activeState ? this.stop() : this.start())
 	}
 	DOMChangeHelper.prototype.isActive = function(){
 		return activeState;

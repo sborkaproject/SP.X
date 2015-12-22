@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SP.X Demo</title>
+	<meta charset="utf-8">
+	<script src="../sp.x.min.js"></script>
+	<script src="../extensions/delayedsrchelper.js"></script>
+	<script src="../extensions/domchangehelper.js"></script>
+	<script src="../extensions/domelementcontroller.js"></script>
+	<script src="../extensions/domutils.js"></script>
+	<script src="../extensions/environment.js"></script>
+	<script src="../extensions/imageprocessor.js"></script>
+	<script src="../extensions/scrollsmoothing.js"></script>
+	<script src="../extensions/start.js"></script>
+	<script src="../extensions/ticker.js"></script>
+
+	<script src="vendor/tweenmax.js"></script>
+	
+	<script>
+		var App = new SP.X('App', false);
+
+		App.define('controllers.BlockFallController', ['modules.Ticker'], function(Ticker){
+			var instances = [];
+			Ticker.addListener(function( delta ){
+				var totalInstances = instances.length;
+				for(var k=0; k<totalInstances; k++){
+					var instance = instances[k];
+					if(instance){
+						instance.update( delta )
+					}
+				}
+			})
+			function addInstance( instance ){
+				instances.push(instance)
+			}
+			function removeInstance( instance ){
+				var totalInstances = instances.length;
+				for(var k=0; k<totalInstances; k++){
+					if(instance === instances[k]){
+						instances.splice(k, 1);
+					}
+				}
+			}
+			function BlockFallController( element ){
+				this.element = element;
+				this.y = parseInt(element.style.top);
+				this.vy = 0;
+				this.jumped = false;
+				addInstance( this );
+			}
+			BlockFallController.prototype = {
+				update: function( delta ){
+					this.vy += (delta / 1000) * 5;
+					this.y += this.vy;
+
+					this.element.style.top = this.y + '%';
+
+					if(this.y > 100){
+						if(!this.jumped){
+							this.vy = -this.vy / 2;
+							this.jumped = true;
+						} else {
+							removeInstance( this );
+							var self = this;
+							TweenMax.to(this.element, 0.5, {alpha: 0, onComplete: function(){
+								self.element.parentNode.removeChild(self.element);
+							}})
+						}
+					}
+				}
+			}
+
+			return BlockFallController;
+		})
+
+		App.define('factories.BlockFactory', function(){
+
+			var r = 0;
+			var g = 0;
+			var b = 0;
+			var rd = 1;
+			var gd = 1;
+			var bd = 1;
+
+			function BlockFactory(){}
+			BlockFactory.prototype.create = function(x,y){
+				if(isNaN(x) || isNaN(y)){
+					return;
+				}
+				rd = rd * (r >= 255 || r <= 0 ? -1 : 1);
+				gd = gd * (g >= 255 || g <= 0 ? -1 : 1);
+				bd = bd * (b >= 255 || b <= 0 ? -1 : 1);
+
+				r += rd * 0.5;
+				g += gd * 1.0;
+				b += bd * 1.5;
+
+				r = r > 255 ? 255 : (r < 0 ? 0 : r);
+				g = g > 255 ? 255 : (g < 0 ? 0 : g);
+				b = b > 255 ? 255 : (b < 0 ? 0 : b);
+
+				var newDiv = document.createElement('div');
+
+				// data-falling registered as alias to 'controllers.BlockFallController'
+				newDiv.innerHTML = '<div class="falling" data-falling></div>';
+				newDiv = newDiv.childNodes[0];
+				newDiv.style.backgroundColor = 'rgba('+(r<<0)+','+(g<<0)+','+(b<<0)+',1)';
+				document.body.appendChild(newDiv);
+
+				var top = (y / window.innerHeight * 100);
+				var size = 5 + Math.random() * 20;
+				var halfSize = size/2;
+				TweenMax.set(newDiv, {left: x, top: top + '%', width: size, height: size, marginLeft: -halfSize, marginTop: -halfSize, force3D: true})			
+			}
+			return new BlockFactory();
+		})
+
+		App.on(App.events.DOM_READY, function(){
+
+			App.modules.DOMElementController.registerAlias('data-falling', 'controllers.BlockFallController');
+
+			var mousedown = false;
+			var x;
+			var y;
+			this.DOMUtils.addEventListener(document, 'mousedown touchstart', function( e ){
+				mousedown = true;
+				x = e.touches ? e.touches[0].clientX : e.clientX;
+				y = e.touches ? e.touches[0].clientY : e.clientY;
+				App.factories.BlockFactory.create(x, y);
+			})
+			this.DOMUtils.addEventListener(document, 'mousemove touchmove', function( e ){
+				x = e.touches ? e.touches[0].clientX : e.clientX;
+				y = e.touches ? e.touches[0].clientY : e.clientY;
+				if(mousedown){
+					e.preventDefault();
+					App.factories.BlockFactory.create(x, y);
+				}
+			})
+			this.DOMUtils.addEventListener(document, 'mouseup touchend', function( e ){
+				mousedown = false;
+			})
+
+			App.modules.Ticker.addListener(function(){
+				if(mousedown){
+					App.factories.BlockFactory.create(x, y);
+				}
+			})
+
+			var toggleButton_1 = document.getElementById('dch-toggle');
+			this.DOMUtils.addEventListener(toggleButton_1, 'mousedown touchstart', function(){
+				App.modules.DOMChangeHelper.toggle();
+
+				if(App.modules.DOMChangeHelper.isActive()){
+					App.DOMUtils.removeClass(toggleButton_1, '_unactive');
+					App.DOMUtils.addClass(toggleButton_1, '_active');
+				} else {
+					App.DOMUtils.removeClass(toggleButton_1, '_active');
+					App.DOMUtils.addClass(toggleButton_1, '_unactive');
+				}
+
+				TweenMax.fromTo( toggleButton_1, 0.35, {scale: 0.95}, {scale: 1})
+			})	
+
+			var toggleButton_2 = document.getElementById('ticker-toggle');
+			var timeSlowed = false;
+			this.DOMUtils.addEventListener(toggleButton_2, 'mousedown touchstart', function(){
+				timeSlowed = !timeSlowed;
+
+				App.modules.Ticker.timeScale(timeSlowed ? 0.1 : 1);
+
+				if(!timeSlowed){
+					App.DOMUtils.removeClass(toggleButton_2, '_unactive');
+					App.DOMUtils.addClass(toggleButton_2, '_active');
+				} else {
+					App.DOMUtils.removeClass(toggleButton_2, '_active');
+					App.DOMUtils.addClass(toggleButton_2, '_unactive');
+				}
+
+				TweenMax.fromTo( toggleButton_2, 0.35, {scale: 0.95}, {scale: 1})
+			})			
+		})
+	</script>
+	<style>
+		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+		*{ padding:0; margin:0; }
+		html, body {
+			width:100%;
+			height:100%;
+			overflow: hidden;
+		}
+		body{
+			font: 400 13px/1 "PT Sans",sans-serif;
+			color: #000000;
+			background: #FFFFFF;
+			cursor: default;
+		}
+		.controls {
+			position: fixed;
+			z-index: 9;
+			top: 0;
+		}
+		.button {
+			position: relative;
+			padding: 10px;
+			background: #000000;
+			color: #FFFFFF;
+			float: left;
+			margin-top: 5px;
+			margin-left: 5px;
+			cursor: pointer;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			-webkit-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		.button._active{
+			outline: 1px solid green;
+		}
+		.button._unactive{
+			outline: 1px solid red;
+		}		
+		.falling{
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			background: rgba(0,0,0,0.5);
+			border-radius: 200px;
+		}
+	</style>
+</head>
+	<body>
+		<div class="controls">
+			<div class="button _active" id="dch-toggle">Toggle DOMChangeHelper activity</div>
+			<div class="button _active" id="ticker-toggle">Toggle Ticker timeScale</div>
+		</div>
+	</body>
+</html>

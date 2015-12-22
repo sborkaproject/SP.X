@@ -28,6 +28,9 @@
 				}
 			}
 		})
+
+		App.modules.DOMElementController.registerAlias('data-testcontroller', 'controllers.TestController');
+
 	</script>
 	<style>
 		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
@@ -39,24 +42,26 @@
 			cursor: default;
 			margin-top: 50px;
 		}
-		div{
+		.testblock{
 			position: absolute;
 			width: 200px;
-			height: 20px;
+			height: 100px;
 			text-align: center;
 			top: 50%;
 			left: 50%;
-			margin-top: -10px;
-			margin-left: -100px;
+			margin-top: -60px;
+			margin-left: -110px;
 			background: #334455;
+			padding: 10px;
 			color: white;
-			font-size: 20px;
+			font-size: 16px;
 			line-height: 20px;
 			text-shadow: 0 0 5px rgba(0,0,0,0.5);
 		}
 	</style>
 </head>
-	<body>
-		<div data-controller="controllers.TestController" data-controller-data="text:'Hello world!',animation:{rotationX:'+=360',yoyo:true,repeat:-1,repeatDelay:2,ease:Back.easeInOut}"></div>
+	<body>,.
+		<div class="testblock" data-controller="controllers.TestController" data-controller-data="text:'Controller added<br/>by \'data-controller\' attribute',animation:{rotationX:'+=360',yoyo:true,repeat:-1,repeatDelay:2,ease:Back.easeInOut}"></div>
+		<div class="testblock" data-testcontroller="text:'Controller added by alias \'data-testcontroller\' attribute',animation:{y:'+=130',yoyo:true,repeat:-1,repeatDelay:2,ease:Back.easeInOut}"></div>
 	</body>
 </html>

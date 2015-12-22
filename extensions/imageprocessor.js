@@ -114,6 +114,5 @@ SP.X.extend('modules.ImageProcessor', ['utils'], function( utils ){
 		}
 		utils.testCallback( collectHandler, [imagedElements] );
 	}
-
 	return new ImageProcessor();
 });

@@ -29,6 +29,9 @@
 			var bd = 1;
 
 			return function TestController( element, elementData ){
+				if(element.offsetWidth < 10){
+					return;
+				}
 				var created = false;
 				DOMUtils.addEventListener(element, 'mouseenter mousedown touchstart', function( e ){
 					if(!created){
@@ -49,7 +52,7 @@
 
 						var html = '';
 						for(var k=0; k<4; k++){
-							html += '<div class="test x'+(k + 1)+'" style="background: rgba('+r+','+g+','+b+',1)" data-controller="controllers.TestController"></div>';
+							html += '<div class="test x'+(k + 1)+'" style="background:rgba('+r+','+g+','+b+',1)" data-testcontroller></div>';
 						}
 						element.innerHTML = html;
 						TweenMax.staggerFromTo(element.childNodes, 0.5, {scale: 0, alpha: 0}, {scale: 1, alpha: 1, ease: Back.easeOut }, 0.05)
@@ -58,6 +61,9 @@
 				})
 			}
 		})
+
+		App.modules.DOMElementController.registerAlias('data-testcontroller', 'controllers.TestController');
+
 	</script>
 	<style>
 		@import url(http://fonts.googleapis.com/css?family=PT+Sans);
@@ -87,10 +93,10 @@
 			border-radius: 1000px;
 			background-color: rgba(0,0,0,1);
 		}
-		.test.x1{ top: 0%; left: 0%; }
-		.test.x2{ top: 0%; left: 50%; }
+		.test.x1{ top: 0%;  left: 0%;  }
+		.test.x2{ top: 0%;  left: 50%; }
 		.test.x3{ top: 50%; left: 50%; }
-		.test.x4{ top: 50%; left: 0%; }
+		.test.x4{ top: 50%; left: 0%;  }
 
 		.counter{
 			background: red;
@@ -100,6 +106,6 @@
 	</style>
 </head>
 	<body>
-		<div class="container" data-controller="controllers.TestController"></div>
+		<div class="container" data-testcontroller></div>
 	</body>
 </html>
